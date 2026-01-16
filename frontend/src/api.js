@@ -2,7 +2,8 @@
  * API client for the LLM Council backend.
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+// Use nullish coalescing so empty string is respected (for production with nginx proxy)
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8001';
 
 export const api = {
   /**
