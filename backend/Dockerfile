@@ -9,9 +9,8 @@ RUN pip install --no-cache-dir .
 
 # Copy backend code
 COPY backend/ ./backend/
-COPY data/ ./data/ 2>/dev/null || mkdir -p ./data/conversations
 
-# Create data directory if it doesn't exist
+# Create data directory (will be mounted as volume in production)
 RUN mkdir -p /app/data/conversations
 
 # Expose port
