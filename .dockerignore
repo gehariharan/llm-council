@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv
+ENV
+env
+.uv
+
+# Node
+node_modules
+frontend/node_modules
+.npm
+
+# Build outputs
+frontend/dist
+*.egg-info
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Environment files (will be passed via docker-compose)
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Test files
+*.test.js
+*.spec.js
+__tests__
+
+# Documentation (not needed in container)
+*.md
+!README.md
+
+# Misc
+access_key.json
+responses/
+debug_*.py
