@@ -85,3 +85,59 @@ Then open http://localhost:5173 in your browser.
 - **Frontend:** React + Vite, react-markdown for rendering
 - **Storage:** JSON files in `data/conversations/`
 - **Package Management:** uv for Python, npm for JavaScript
+
+## Production Deployment
+
+### Docker Compose (Recommended)
+
+```bash
+# Build and run with Docker Compose
+docker compose up -d --build
+
+# Application will be available at http://localhost:8080
+```
+
+### CI/CD with GitHub Actions
+
+The project includes automated deployment via GitHub Actions. When you push to the `main` branch, it automatically deploys to the production server.
+
+#### Setup Required Secrets
+
+In your GitHub repository, go to **Settings → Secrets and variables → Actions** and add:
+
+| Secret | Description |
+|--------|-------------|
+| `SERVER_HOST` | Server IP address (e.g., `69.62.73.41`) |
+| `SERVER_PORT` | SSH port (e.g., `22`) |
+| `SERVER_USERNAME` | SSH username for the production server |
+| `SERVER_SSH_KEY` | Private SSH key for server authentication |
+| `APP_PORT` | Application port (e.g., `8080`) |
+
+#### Server Prerequisites
+
+1. **Clone the repository** on your server:
+   ```bash
+   cd ~
+   git clone https://github.com/YOUR_USERNAME/llm-council.git
+   cd llm-council
+   ```
+
+2. **Create environment file** with your API key:
+   ```bash
+   echo "OPENROUTER_API_KEY=sk-or-v1-..." > .env
+   ```
+
+3. **Ensure Docker is installed**:
+   ```bash
+   docker --version
+   docker compose version
+   ```
+
+4. **Initial deployment**:
+   ```bash
+   docker compose up -d --build
+   ```
+
+#### Manual Deployment Trigger
+
+You can also trigger a deployment manually from the GitHub Actions tab using the "Run workflow" button.

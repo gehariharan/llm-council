@@ -11,9 +11,16 @@ wheels/
 
 # Keys and secrets
 .env
+access_key.json
+
+# Debug scripts
+debug_*.py
 
 # Data files
 data/
+
+# Response outputs
+responses/
 
 # Frontend
 frontend/node_modules/
