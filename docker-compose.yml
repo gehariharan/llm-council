@@ -20,9 +20,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        # For production: use /api to hit the nginx proxy
-        # This gets baked into the build
-        VITE_API_URL: ${VITE_API_URL:-/api}
+        # Empty string so frontend uses relative paths like /api/conversations
+        # nginx proxies /api/* to backend
+        VITE_API_URL: ${VITE_API_URL:-}
     ports:
       - "8080:80"
     depends_on:
