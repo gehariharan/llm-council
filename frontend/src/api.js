@@ -7,6 +7,23 @@ const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8001';
 
 export const api = {
   /**
+   * Authenticate with PIN.
+   */
+  async authenticate(pin) {
+    const response = await fetch(`${API_BASE}/api/auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ pin }),
+    });
+    if (!response.ok) {
+      throw new Error('Invalid PIN');
+    }
+    return response.json();
+  },
+
+  /**
    * List all conversations.
    */
   async listConversations() {
@@ -43,6 +60,22 @@ export const api = {
     );
     if (!response.ok) {
       throw new Error('Failed to get conversation');
+    }
+    return response.json();
+  },
+
+  /**
+   * Delete a conversation.
+   */
+  async deleteConversation(conversationId) {
+    const response = await fetch(
+      `${API_BASE}/api/conversations/${conversationId}`,
+      {
+        method: 'DELETE',
+      }
+    );
+    if (!response.ok) {
+      throw new Error('Failed to delete conversation');
     }
     return response.json();
   },

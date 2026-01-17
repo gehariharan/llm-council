@@ -24,3 +24,6 @@ OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # Data directory for conversation storage
 DATA_DIR = "data/conversations"
+
+# Authentication PIN (hardcoded)
+AUTH_PIN = "2026"

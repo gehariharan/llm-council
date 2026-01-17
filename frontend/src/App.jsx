@@ -4,16 +4,66 @@ import ChatInterface from './components/ChatInterface';
 import { api } from './api';
 import './App.css';
 
+function AuthScreen({ onAuthenticated }) {
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      await api.authenticate(pin);
+      localStorage.setItem('llm_council_auth', 'true');
+      onAuthenticated();
+    } catch (err) {
+      setError('Invalid PIN');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="auth-screen">
+      <div className="auth-container">
+        <h1>LLM Council</h1>
+        <p>Enter PIN to continue</p>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="password"
+            value={pin}
+            onChange={(e) => setPin(e.target.value)}
+            placeholder="Enter PIN"
+            autoFocus
+            disabled={isLoading}
+          />
+          <button type="submit" disabled={isLoading || !pin}>
+            {isLoading ? 'Authenticating...' : 'Enter'}
+          </button>
+          {error && <div className="auth-error">{error}</div>}
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('llm_council_auth') === 'true';
+  });
   const [conversations, setConversations] = useState([]);
   const [currentConversationId, setCurrentConversationId] = useState(null);
   const [currentConversation, setCurrentConversation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load conversations on mount
+  // Load conversations on mount (only if authenticated)
   useEffect(() => {
-    loadConversations();
-  }, []);
+    if (isAuthenticated) {
+      loadConversations();
+    }
+  }, [isAuthenticated]);
 
   // Load conversation details when selected
   useEffect(() => {
@@ -55,6 +105,19 @@ function App() {
 
   const handleSelectConversation = (id) => {
     setCurrentConversationId(id);
+  };
+
+  const handleDeleteConversation = async (id) => {
+    try {
+      await api.deleteConversation(id);
+      setConversations(conversations.filter((c) => c.id !== id));
+      if (currentConversationId === id) {
+        setCurrentConversationId(null);
+        setCurrentConversation(null);
+      }
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+    }
   };
 
   const handleSendMessage = async (content) => {
@@ -181,6 +244,10 @@ function App() {
     }
   };
 
+  if (!isAuthenticated) {
+    return <AuthScreen onAuthenticated={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="app">
       <Sidebar
@@ -188,6 +255,7 @@ function App() {
         currentConversationId={currentConversationId}
         onSelectConversation={handleSelectConversation}
         onNewConversation={handleNewConversation}
+        onDeleteConversation={handleDeleteConversation}
       />
       <ChatInterface
         conversation={currentConversation}
